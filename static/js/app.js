@@ -30,7 +30,7 @@ d3.json(url).then(function(data){
         }
 
     // Create function for first visualization the the webpage
-    function init(){
+    function initBar(){
         // Save inital sampla data to variables
         let initialSample = samples[0];
         // Given that the data is already sorted in descending order, we can slice the 10 ten data points on each array
@@ -69,9 +69,9 @@ d3.json(url).then(function(data){
         Plotly.newPlot("bar", data, layout);
     };
 
-    d3.selectAll("#selDataset").on("change", updatePlotly);
+    d3.selectAll("#selDataset").on("change", updateBar);
 
-    function updatePlotly(){
+    function updateBar(){
 
         let dropdownMenu = d3.select("#selDataset");
         let thissampleID = dropdownMenu.property("value");
@@ -93,7 +93,9 @@ d3.json(url).then(function(data){
     };
 
     // Call the init fuction to display initial plot
-    init()
+    initBar()
+
+    
 });
 
 
