@@ -19,6 +19,7 @@ d3.json(url).then(function(data){
             };
             otu_ids_list.push(changed_otu_ids_list)
         };
+
     let otu_labels_list = samples.map(data => data['otu_labels']);
     
     let dropdownOptions = d3.select("#selDataset");
@@ -69,7 +70,10 @@ d3.json(url).then(function(data){
         Plotly.newPlot("bar", data, layout);
     };
 
-    d3.selectAll("#selDataset").on("change", updateBar);
+    d3.selectAll("#selDataset").on("change", function(){
+        updateBar();
+        updateBubble();
+    });
 
     function updateBar(){
 
@@ -91,9 +95,6 @@ d3.json(url).then(function(data){
         Plotly.restyle("bar", "y", [y]);
         Plotly.restyle("bar", "text", [text]);
     };
-
-    // Call the initBar fuction to display initial Bar Plot
-    initBar()
 
     function initBubble(){
         // Save inital sampla data to variables
@@ -119,13 +120,46 @@ d3.json(url).then(function(data){
 
         let layout = {
             height: 600,
-            width: 1200
+            width: 1200,
+            xaxis: {
+                title: "OTU ID"
+            }
         }
 
         Plotly.newPlot("bubble", data, layout);
     };
 
+    // d3.selectAll("#selDataset").on("change", updateBubble);
 
+    function updateBubble(){
+
+        let dropdownMenu = d3.select("#selDataset");
+        let thissampleID = dropdownMenu.property("value");
+
+        let x = [];
+        let y = [];
+        let size = [];
+        let color = [];
+        let text = [];
+
+        for(let i = 0; i < sampleID_List.length; i++){
+            if (thissampleID === sampleID_List[i]){
+                x = raw_otu_ids_list[i];
+                y = sample_value_List[i];
+                size = sample_value_List[i];
+                color = raw_otu_ids_list[i];
+                text = otu_labels_list[i];
+            };
+        };
+        Plotly.restyle("bubble", "x", [x]);
+        Plotly.restyle("bubble", "y", [y]);
+        Plotly.restyle("bubble", "size", [size]);
+        Plotly.restyle("bubble", "color", [color]);
+        Plotly.restyle("bubble", "text", [text]);
+    };
+
+    // Call the initBar fuction to display initial Bar Plot
+    initBar()
     // Call the initBubble fuction to display Bubble Chart
     initBubble();
 });
