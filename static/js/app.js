@@ -92,10 +92,42 @@ d3.json(url).then(function(data){
         Plotly.restyle("bar", "text", [text]);
     };
 
-    // Call the init fuction to display initial plot
+    // Call the initBar fuction to display initial Bar Plot
     initBar()
 
-    
+    function initBubble(){
+        // Save inital sampla data to variables
+        let initialSample = samples[0];
+        
+        let initialSample_values = initialSample['sample_values'];
+        let intialRaw_otu_ids = initialSample['otu_ids'];
+        let initialOtu_labels = initialSample['otu_labels'];
+
+        // Create a bubble chart using Plotly
+        let trace = {
+            x: intialRaw_otu_ids,
+            y: initialSample_values,
+            mode: 'markers',
+            marker: {
+                size: initialSample_values,
+                color: intialRaw_otu_ids
+            },
+            text: initialOtu_labels
+        };
+
+        let data = [trace];
+
+        let layout = {
+            height: 600,
+            width: 1200
+        }
+
+        Plotly.newPlot("bubble", data, layout);
+    };
+
+
+    // Call the initBubble fuction to display Bubble Chart
+    initBubble();
 });
 
 
