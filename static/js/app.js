@@ -134,6 +134,12 @@ d3.json(url).then(function(data){
             width: 1200,
             xaxis: {
                 title: "OTU ID"
+            },
+            margin: {
+                l: 100,
+                r: 100,
+                b: 200,
+                t: 5
             }
         }
 
