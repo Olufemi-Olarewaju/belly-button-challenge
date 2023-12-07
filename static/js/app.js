@@ -3,8 +3,18 @@ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/
 
 // Get data from url using d3
 d3.json(url).then(function(data){
+
+    let metadata = data['metadata'];
+    let metaData_keys = [];
+    let metaData_values = [];
+
+    for(let i = 0; i < metadata.length; i++){
+    metaData_keys.push(Object.keys(metadata[i]));
+    metaData_values.push(Object.values(metadata[i]));
+    };
+
     // Save sample data in variable
-    let samples = data["samples"]
+    let samples = data["samples"];
 
     let sampleID_List = samples.map(data => data['id']);
     let sample_value_List = samples.map(data => data['sample_values']);
@@ -29,6 +39,12 @@ d3.json(url).then(function(data){
         let option = dropdownOptions.append("option").text(sampleID);
         option.attr("value", sampleID);
         }
+    
+    d3.selectAll("#selDataset").on("change", function(){
+        updateBar();
+        updateBubble();
+        updateMetaData();
+    });
 
     // Create function for first visualization the the webpage
     function initBar(){
@@ -69,11 +85,6 @@ d3.json(url).then(function(data){
 
         Plotly.newPlot("bar", data, layout);
     };
-
-    d3.selectAll("#selDataset").on("change", function(){
-        updateBar();
-        updateBubble();
-    });
 
     function updateBar(){
 
@@ -129,7 +140,7 @@ d3.json(url).then(function(data){
         Plotly.newPlot("bubble", data, layout);
     };
 
-    // d3.selectAll("#selDataset").on("change", updateBubble);
+
 
     function updateBubble(){
 
@@ -158,10 +169,40 @@ d3.json(url).then(function(data){
         Plotly.restyle("bubble", "text", [text]);
     };
 
+    function initMetaData(){
+        let intialMetaData_keys = metaData_keys[0];
+        let intialMetaData_values = metaData_values[0];
+
+        let demoInfoBox = d3.select("#sample-metadata");
+
+        for(let i = 0; i < intialMetaData_keys.length; i++){
+            demoInfoBox.append("tr").text(`${intialMetaData_keys[i]}: ${intialMetaData_values[i]}`);
+        };
+    };
+
+    function updateMetaData(){
+        let dropdownMenu = d3.select("#selDataset");
+        let thissampleID = dropdownMenu.property("value");
+
+        let demoInfoBox = d3.select("#sample-metadata");
+        
+        d3.selectAll("tr").remove()
+
+        for (let i = 0; i < metaData_values.length; i++){
+            if (thissampleID === metaData_values[i][0].toString()){
+                for(let j = 0; j < metaData_values[i].length; j++){
+                    demoInfoBox.append("tr").text(`${metaData_keys[i][j]}: ${metaData_values[i][j]}`);
+                };
+            };
+        };
+    };
+
     // Call the initBar fuction to display initial Bar Plot
     initBar()
-    // Call the initBubble fuction to display Bubble Chart
+    // Call the initBubble fuction to display initial Bubble Chart
     initBubble();
+    // Call the initMetaData fuction to display initMetaData Demographic Info
+    initMetaData();
 });
 
 
