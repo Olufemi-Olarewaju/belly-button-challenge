@@ -44,6 +44,7 @@ d3.json(url).then(function(data){
         updateBar();
         updateBubble();
         updateMetaData();
+        updateGauge();
     });
 
     // Create function for first visualization the the webpage
@@ -209,14 +210,14 @@ d3.json(url).then(function(data){
         let degree_per_section = 20
         let level = washFrequencies * degree_per_section;
 
-        // Trig to calc meter point
+        // Trig to calculate meter point
         let degrees = 180 - level,
         radius = .55;
         let radians = degrees * Math.PI / 180;
         let x = radius * Math.cos(radians);
         let y = radius * Math.sin(radians);
 
-        // Path: may have to change to create a better triangle
+        // Path
         let mainPath = 'M -.0 -0.025 L .0 0.025 L ',
         pathX = String(x),
         space = ' ',
@@ -227,11 +228,11 @@ d3.json(url).then(function(data){
         let trace1 = {
             type: 'scatter', 
             x: [0], 
-            y:[0],
+            y: [0],
             marker: {size: 28, color:'850000'},
             showlegend: false,
-            name: 'speed',
-            text: level,
+            name: 'Scrubs',
+            text: washFrequencies,
             hoverinfo: 'text+name'
         };
         
@@ -276,6 +277,97 @@ d3.json(url).then(function(data){
         Plotly.newPlot('gauge', data, layout);
     }
 
+    function updateGauge(){
+        let dropdownMenu = d3.select("#selDataset");
+        let thissampleID = dropdownMenu.property("value");
+
+        let washFrequencies = 0;
+        let degree_per_section = 20;
+        let level = 0;
+        let path = '';
+        
+        let washFrequencies_list = [];
+
+        for(let i = 0; i < metadata.length; i++){
+            washFrequencies_list.push(metadata[i]['wfreq'])
+        };
+
+        for(let i = 0; i < washFrequencies_list.length; i++){
+            if (thissampleID === sampleID_List[i]){
+                washFrequencies = washFrequencies_list[i];
+                level = washFrequencies * degree_per_section;
+
+                // Trig to calculate meter point
+                let degrees = 180 - level,
+                radius = .55;
+                let radians = degrees * Math.PI / 180;
+                let x = radius * Math.cos(radians);
+                let y = radius * Math.sin(radians);
+
+                // Path
+                let mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+                pathX = String(x),
+                space = ' ',
+                pathY = String(y),
+                pathEnd = ' Z';
+                path = mainPath.concat(pathX,space,pathY,pathEnd);
+
+                console.log(path)
+            };
+        };
+
+        let trace1 = {
+            type: 'scatter', 
+            x: [0], 
+            y: [0],
+            marker: {size: 28, color:'850000'},
+            showlegend: false,
+            name: 'Scrubs',
+            text: washFrequencies,
+            hoverinfo: 'text+name'
+        };
+        
+        let trace2 = {
+            values: [20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20],
+            rotation: 90,
+            text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
+            textinfo: 'text',
+            textposition:'inside',    
+            marker: {colors:['rgba(5, 127, 0, .5)', 'rgba(30, 127, 0, .5)', 'rgba(50, 127, 0, .5)',
+                    'rgba(110, 154, 22, .5)', 'rgba(170, 202, 42, .5)',
+                    'rgba(202, 209, 95, .5)', 'rgba(210, 206, 145, .5)',
+                    'rgba(220, 216, 180, .5)', 'rgba(232, 226, 202, .5)',
+                    'rgba(255, 255, 255, 0)']},
+            labels: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
+            hoverinfo: 'label',
+            hole: .5,
+            type: 'pie',
+            showlegend: false
+        };
+
+
+        let data = [trace1, trace2];
+
+        let layout = {
+            shapes:[{
+                type: 'path',
+                path: path,
+                fillcolor: '850000',
+                line: {
+                    color: '850000'
+                    }}],
+            title: '<b>Belly Button Washing Frequency</b> <br> Scrubs per Week',
+            height: 500,
+            width: 500,
+            xaxis: {zeroline:false, showticklabels:false,
+                showgrid: false, range: [-1, 1]},
+            yaxis: {zeroline:false, showticklabels:false,
+                showgrid: false, range: [-1, 1]}
+        };
+        
+        Plotly.newPlot('gauge', data, layout);
+    };
+
     // Call the initBar fuction to display initial Bar Plot
     initBar()
     // Call the initBubble fuction to display initial Bubble Chart
@@ -285,43 +377,4 @@ d3.json(url).then(function(data){
     // Call the initGauge fuction to display initial wash frequency
     initGauge();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
