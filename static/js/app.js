@@ -204,12 +204,14 @@ d3.json(url).then(function(data){
     };
 
     function initGauge(){
-        // Enter a speed between 0 and 180
-        let level = 10;
+        // Enter Belly Button Washing Frequency
+        let washFrequencies = metadata[0]['wfreq'];
+        let degree_per_section = 20
+        let level = washFrequencies * degree_per_section;
 
         // Trig to calc meter point
         let degrees = 180 - level,
-        radius = .5;
+        radius = .55;
         let radians = degrees * Math.PI / 180;
         let x = radius * Math.cos(radians);
         let y = radius * Math.sin(radians);
@@ -236,15 +238,15 @@ d3.json(url).then(function(data){
         let trace2 = {
             values: [20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20/9, 20],
             rotation: 90,
-            text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1'],
+            text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
             textinfo: 'text',
             textposition:'inside',    
             marker: {colors:['rgba(5, 127, 0, .5)', 'rgba(30, 127, 0, .5)', 'rgba(50, 127, 0, .5)',
                     'rgba(110, 154, 22, .5)', 'rgba(170, 202, 42, .5)',
                     'rgba(202, 209, 95, .5)', 'rgba(210, 206, 145, .5)',
-                    'rgba(232, 226, 202, .5)', 'rgba(232, 226, 202, .5)',
-                    'rgba(255, 255, 255, 0)',]},
-            // labels: ['151-180', '121-150', '91-120', '61-90', '31-60', '0-30', ''],
+                    'rgba(220, 216, 180, .5)', 'rgba(232, 226, 202, .5)',
+                    'rgba(255, 255, 255, 0)']},
+            labels: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
             hoverinfo: 'label',
             hole: .5,
             type: 'pie',
@@ -262,7 +264,7 @@ d3.json(url).then(function(data){
                 line: {
                     color: '850000'
                     }}],
-            title: '<b>Gauge</b> <br> Speed 0-100',
+            title: '<b>Belly Button Washing Frequency</b> <br> Scrubs per Week',
             height: 500,
             width: 500,
             xaxis: {zeroline:false, showticklabels:false,
